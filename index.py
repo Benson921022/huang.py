@@ -209,8 +209,8 @@ def rate():
 
     return f"電影含分級資料更新完成，更新時間：{lastUpdate}"
 
-@app.route("/webhook2", methods=["POST"])
-def webhook2():
+@app.route("/webhook3", methods=["POST"])
+def webhook3():
     # build a request object
     req = request.get_json(force=True)
     # fetch queryResult from json
@@ -219,8 +219,19 @@ def webhook2():
     #info = "動作：" + action + "； 查詢內容：" + msg
     if (action == "rateChoice"):
         rate =  req.get("queryResult").get("parameters").get("rate")
-        info = "您選擇的電影分級是：" + rate
+        info = "我是楊子青開發的電影聊天機器人,您選擇的電影分級是：" + rate + "，相關電影：\n"
+        db = firestore.client()
+        collection_ref = db.collection("電影含分級")
+        docs = collection_ref.get()
+        result = ""
+        for doc in docs:
+            dict = doc.to_dict()
+            if rate in dict["rate"]:
+                result += "片名：" + dict["title"] + "\n"
+                result += "介紹：" + dict["hyperlink"] + "\n\n"
+        info += result
     return make_response(jsonify({"fulfillmentText": info}))
+
 
 
 
