@@ -28,7 +28,7 @@ def index():
     <a href=/rate>爬蟲含分級電影資料，寫入Firestore</a><br>
     <a href=/searchQ>輸入關鍵字查詢電影</a><br>
     <a href=/searchR>查詢台中肇事路段</a><br><br>
-    <iframe width="350" height="430" allow="microphone;" src="https://bot.dialogflow.com/5267bc98-d21d-48dc-8d45-46ede9db1599"></iframe>
+    <iframe width="350" height="430" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/5267bc98-d21d-48dc-8d45-46ede9db1599"></iframe>
     """
     return homepage
 
