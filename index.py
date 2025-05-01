@@ -209,46 +209,20 @@ def rate():
 
     return f"電影含分級資料更新完成，更新時間：{lastUpdate}"
 
-@app.route("/webhook3", methods=["POST"])
-def webhook3():
+@app.route("/webhook2", methods=["POST"])
+def webhook2():
+    # build a request object
     req = request.get_json(force=True)
-    print("Received request:", req)  # 打印請求的內容
+    # fetch queryResult from json
+    action =  req.get("queryResult").get("action")
+    #msg =  req.get("queryResult").get("queryText")
+    #info = "動作：" + action + "； 查詢內容：" + msg
+    if (action == "rateChoice"):
+        rate =  req.get("queryResult").get("parameters").get("rate")
+        info = "您選擇的電影分級是：" + rate
+    return make_response(jsonify({"fulfillmentText": info}))
 
-    action = req.get("queryResult", {}).get("action", "")
-    parameters = req.get("queryResult", {}).get("parameters", {})
 
-    print("Action:", action)  # 打印Action
-    print("Parameters:", parameters)  # 打印Parameters
-
-    info = "尚未處理的動作：" + action
-
-    if action == "rateChoice":
-        rate = parameters.get("rate", "")  # 獲取用戶選擇的電影分級
-        info = f"我是黃柏彰開發的電影聊天機器人，您選擇的電影分級是：{rate}，相關電影如下：\n\n"
-        
-        # 查詢 Firebase 資料庫中的 "電影含分級" 集合
-        collection_ref = db.collection("電影含分級")
-        docs = collection_ref.get()
-        
-        movies_list = ""
-        for doc in docs:
-            data = doc.to_dict()
-            # 根據分級過濾電影資料
-            if rate == data.get("rate", ""):
-                movies_list += f"🎬 片名：{data['title']}\n🔗 介紹：{data['hyperlink']}\n\n"
-        
-        # 如果沒有找到符合條件的電影
-        if not movies_list:
-            movies_list = "目前沒有符合此分級的電影喔～"
-        
-        # 將電影清單加入回答信息
-        info += movies_list
-
-    # 把回答包裝成 Dialogflow 接受的格式
-    return jsonify({
-        "fulfillmentText": info,
-        "source": "webhook3"  # 可選，代表來源
-    })
 
 
 
