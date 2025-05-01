@@ -218,25 +218,32 @@ def webhook3():
     info = "尚未處理的動作：" + action
 
     if action == "rateChoice":
-        rate = parameters.get("rate", "")
+        rate = parameters.get("rate", "")  # 獲取用戶選擇的電影分級
         info = f"我是黃柏彰開發的電影聊天機器人，您選擇的電影分級是：{rate}，相關電影如下：\n\n"
+        
+        # 查詢 Firebase 資料庫中的 "電影含分級" 集合
         collection_ref = db.collection("電影含分級")
         docs = collection_ref.get()
+        
         movies_list = ""
         for doc in docs:
             data = doc.to_dict()
+            # 根據分級過濾電影資料
             if rate == data.get("rate", ""):
                 movies_list += f"🎬 片名：{data['title']}\n🔗 介紹：{data['hyperlink']}\n\n"
+        
+        # 如果沒有找到符合條件的電影
         if not movies_list:
             movies_list = "目前沒有符合此分級的電影喔～"
+        
+        # 將電影清單加入回答信息
         info += movies_list
 
-    # 把回答包成 Dialogflow 接受的格式
+    # 把回答包裝成 Dialogflow 接受的格式
     return jsonify({
         "fulfillmentText": info,
-        "source": "webhook3"  # 可選，加上代表來源
+        "source": "webhook3"  # 可選，代表來源
     })
-
 
 
 
