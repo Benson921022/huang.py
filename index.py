@@ -213,22 +213,22 @@ def rate():
 def webhook3():
     req = request.get_json(force=True)
     action = req.get("queryResult", {}).get("action", "")
+    info = f"尚未處理的動作：{action}"
+
     if action == "rateChoice":
         rate = req.get("queryResult", {}).get("parameters", {}).get("rate", "")
-        if not rate:
-            return make_response(jsonify({"fulfillmentText": "請提供電影分級，例如『普遍級』"}))
-
-        info = f"您選擇的電影分級是：{rate}，相關電影如下：\n"
-        docs = db.collection("電影含分級").get()
-        matched = ""
-
+        info = f"我是黃柏彰開發的電影聊天機器人，您選擇的電影分級是：{rate}，相關電影如下：\n\n"
+        collection_ref = db.collection("電影含分級")
+        docs = collection_ref.get()
+        result = ""
         for doc in docs:
             data = doc.to_dict()
-            if rate in data.get("rate", ""):
-                matched += f"片名：{data['title']}\n介紹：{data['hyperlink']}\n\n"
+            if rate == data.get("rate", ""):
+                result += f"🎬 片名：{data['title']}\n🔗 介紹：{data['hyperlink']}\n\n"
+        info += result or "目前沒有符合此分級的電影。"
 
-        return make_response(jsonify({"fulfillmentText": info + (matched or '目前無資料')}))
-    return make_response(jsonify({"fulfillmentText": "未定義的動作"}))
+    return make_response(jsonify({"fulfillmentText": info}))
+
 
 
 if __name__ == "__main__":
