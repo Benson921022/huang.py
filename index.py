@@ -212,8 +212,13 @@ def rate():
 @app.route("/webhook3", methods=["POST"])
 def webhook3():
     req = request.get_json(force=True)
+    print("Received request:", req)  # 打印請求的內容
+
     action = req.get("queryResult", {}).get("action", "")
     parameters = req.get("queryResult", {}).get("parameters", {})
+
+    print("Action:", action)  # 打印Action
+    print("Parameters:", parameters)  # 打印Parameters
 
     info = "尚未處理的動作：" + action
 
