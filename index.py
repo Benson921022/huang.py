@@ -24,6 +24,7 @@ def index():
     homepage += "<br><a href=/movie>讀取開眼電影即將上映影片，寫入Firestore</a><br>"
     homepage += "<br><a href='/searchQ'>輸入關鍵字查詢電影</a><br>"
     homepage += "<br><a href='/searchR'>臺中市114年02月份十大易肇事路段(口)</a><br>"
+    homepage += '<iframe width="350" height="430" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/2573e812-2f68-4aca-8b81-f11f431c1e9f"></iframe>'
 
     return homepage
 
